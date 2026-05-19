@@ -1,72 +1,104 @@
-# 🐧 Mitsubishi AC IR Controller (ESP32)
+# Mitsubishi AC IR Controller (ESP32)
 
-Reverse-engineered infrared protocol for **Mitsubishi Heavy Industries SRKxx** air conditioners. ESP32 decodes the IR protocol and exposes full AC control via MQTT, with automatic **Home Assistant MQTT Discovery**. No cloud. No proprietary hub. Just an ESP32 with an IR LED.
+Reverse-engineered infrared protocol for Mitsubishi Heavy Industries SRK-series air conditioners. An ESP32 transmits the captured 8-byte frame on a 38 kHz carrier and exposes full AC control via MQTT, with automatic Home Assistant MQTT Discovery. No cloud, no proprietary hub.
 
 [![PlatformIO](https://img.shields.io/badge/PlatformIO-ESP32-orange)](https://platformio.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
-[![HA Compatible](https://img.shields.io/badge/Home%20Assistant-MQTT%20Auto%20Discovery-blue)](https://www.home-assistant.io/)
+[![HA Compatible](https://img.shields.io/badge/Home%20Assistant-MQTT%20Discovery-blue)](https://www.home-assistant.io/)
 
 ---
 
-## 🎯 What This Does
+## Features
 
 | Capability | Detail |
 |---|---|
 | Modes | Cool / Heat / Dry / Fan Only / Off |
-| Fan speeds | Low / Medium / High / Auto |
-| Temperature | 16–30°C |
-| Swing | Vertical / Horizontal |
-| MQTT | Command + State topics, retained state |
-| HA Discovery | Auto-registers as climate entity |
-| IR Receive | Decodes original remote signals for verification |
+| Fan speeds | Low / Medium / High |
+| Temperature | 16-30 C, 1 C steps |
+| MQTT | Command + retained state topics |
+| HA Discovery | Auto-registers as a climate entity |
+| IR Receive | Decodes the original remote for state sync |
+| Scenes | Power Cool, Comfort, Quiet Sleep, Away/Off presets |
 
 ---
 
-## 🏗 Hardware
+## Hardware
 
 ```
-┌──────────┐     IR LED     ┌─────────────┐
-│  ESP32   │─────▶▶▶────────│  Mitsubishi  │
-│          │    (38 kHz)    │  AC Unit     │
-│  GPIO 4  │                │              │
-└────┬─────┘                └─────────────┘
-     │
-     │ WiFi
-     ▼
-┌──────────┐
-│   MQTT   │
-│  Broker  │  (e.g. Mosquitto, HA add-on)
-└──────────┘
++----------+     IR LED      +--------------+
+|  ESP32   |---->>>----------|  Mitsubishi  |
+|          |    (38 kHz)     |  AC Unit     |
+|  GPIO 4  |                 |              |
++----+-----+                 +--------------+
+     |
+     | WiFi
+     v
++----------+
+|   MQTT   |
+|  Broker  |  (e.g. Mosquitto, HA add-on)
++----------+
 ```
 
-**Wiring** — IR LED (TSAL6200 or similar) on GPIO4 through a 2N2222 transistor:
+Wiring - IR LED driven via a 2N2222 transistor so the GPIO does not source the full LED current:
 
 ```
-ESP32 GPIO4 ──┬── 100Ω ── IR LED Anode ── IR LED Cathode ── GND
-              └── 1kΩ ── 2N2222 Base
-                          Collector ── IR LED Cathode
-                          Emitter ── GND
+ESP32 GPIO4 --+-- 1k --- 2N2222 Base
+              |          Collector --- IR LED Cathode
+              |          Emitter   --- GND
+              |
+              +-- (no direct LED path; LED sits between 3V3 -> 100R -> Anode,
+                   Cathode goes to the transistor collector above)
 ```
 
-> An IR receiver (VS1838B) on GPIO21 is optional — used only for protocol verification.
+An IR receiver (e.g. VS1838B) on GPIO14 is optional and used only for decoding the original remote so the device's MQTT state stays in sync when someone presses the physical remote.
 
 ---
 
-## 📦 MQTT Topics
+## Protocol
+
+The captured frame is **8 bytes**, sent three times back-to-back with a 50 ms gap.
+
+| Byte | Meaning |
+|---|---|
+| B0 | `0xFF` header |
+| B1 | `0x00` header |
+| B2 | Fan speed primary (`0xFF` high, `0xBF` medium, `0x9F` low) |
+| B3 | Fan speed complement (`0x00` / `0x40` / `0x60`) |
+| B4 | High nibble: `(32 - temp) & 0xF`; low nibble: mode (`6` cool, `5` dry, `4` fan, `3` heat). Bit 3 of the low nibble set = power off. |
+| B5 | `0xFF - B4` checksum |
+| B6 | `0x2A` trailer |
+| B7 | `0xD5` trailer |
+
+Timing (microseconds):
+
+| Symbol | Mark | Space |
+|---|---|---|
+| Header | 5950 | 7475 |
+| Bit 1 | 508 | 3454 |
+| Bit 0 | 508 | 1496 |
+| Trailer | 508 | 7422 |
+
+Bits are emitted LSB-first within each byte. Captured with a logic analyser on the original remote's IR LED line and replayed via `IRremoteESP8266`'s `sendRaw`.
+
+---
+
+## MQTT Topics
 
 | Topic | Direction | Description |
 |---|---|---|
-| `camping_ir/cmd/ac_climate` | → | Set mode/temp/fan via JSON |
-| `camping_ir/cmd/ac_climate/mode` | → | Set mode directly |
-| `camping_ir/cmd/ac_climate/temp` | → | Set temperature |
-| `camping_ir/cmd/ac_climate/fan` | → | Set fan speed |
-| `camping_ir/cmd/ac_climate/preset` | → | Set scene preset |
-| `camping_ir/state/ac_climate` | ← | Current AC state (retained) |
-| `camping_ir/ir_received` | ← | Raw decoded IR from remote |
+| `camping_ir/cmd/ac_climate/mode` | -> device | `off`, `cool`, `heat`, `dry`, `fan_only`, `auto` |
+| `camping_ir/cmd/ac_climate/temp` | -> device | Integer 16-30 |
+| `camping_ir/cmd/ac_climate/fan` | -> device | `low`, `medium`, `high` |
+| `camping_ir/cmd/ac_climate/preset` | -> device | `Power Cool`, `Comfort`, `Quiet Sleep`, `Away/Off` |
+| `camping_ir/cmd/ac_climate/set_all` | -> device | JSON `{mode, temperature, fan_speed}` for one-shot setting |
+| `camping_ir/state/ac_climate` | <- device | JSON `{mode, temperature, fan_mode, preset_mode}` (retained) |
+| `camping_ir/state/scene` | <- device | Current scene name (retained) |
+| `camping_ir/ir_received` | <- device | Decoded frame when the original remote is used |
+| `home/<device_id>/availability` | <- device | `online` / `offline` (LWT) |
 
 ---
 
-## 🔧 Build & Deploy
+## Build and Deploy
 
 ```bash
 # 1. Clone
@@ -75,50 +107,28 @@ cd mitsubishi-ac-ir
 
 # 2. Set up secrets
 cp include/secrets.h.template include/secrets.h
-# Edit include/secrets.h with your WiFi credentials
+# Edit include/secrets.h with WiFi, OTA, and MQTT credentials.
 
-# 3. Build & flash (USB first time)
+# 3. Build and flash over USB the first time
+#    In platformio.ini, uncomment the esptool/upload_port lines and
+#    comment out the espota lines.
 pio run -e aircon-esp32 -t upload
 
-# 4. After first flash, switch to OTA
-# In platformio.ini, comment esptool lines, uncomment espota lines
-# Change upload_port to your ESP32's mDNS name
+# 4. After the first flash, switch back to OTA in platformio.ini and set
+#    upload_port to the device's mDNS name.
 ```
 
 ---
 
-## 🔬 Protocol Discovery
+## Known Limitations
 
-The Mitsubishi Heavy Industries protocol uses **17-byte frames** at 38 kHz with the following structure:
-
-```
-Byte 0:   Always 0x52 (header)
-Byte 1:   0x71 (fixed)
-Byte 2:   0x00 or 0x01 (swing control)
-Byte 3:   Mode byte (see table)
-Byte 4:   Temperature (0x10–0x1E → 16–30°C, subtract 0x10)
-Byte 5:   Fan speed
-Byte 6-7: Timer (0x0000 = off)
-Byte 8-9: Unknown / checksum candidates
-Byte 10-16: Fixed trailer pattern
-```
-
-Captured and verified with a **logic analyzer (Saleae clone)** on the original remote's IR output, then replicated with `IRremoteESP8266`.
+- **No auto fan speed.** The captured protocol only encodes three fixed fan speeds (low / medium / high). HA's `auto` fan mode is intentionally not exposed.
+- **No swing control.** The remote's swing buttons send a separate frame that has not been reverse-engineered yet.
+- **Open-loop send.** The device transmits and assumes the AC received the frame - there is no acknowledgement from the unit. The IR receiver provides indirect confirmation when someone uses the physical remote.
+- **Single unit per device.** No remote address is encoded in the frame, so every AC in IR range will respond.
 
 ---
 
-## 📝 License
+## License
 
-MIT — use it, fork it, build on it. Just keep the attribution.
-
----
-
-## 👋 About This Project
-
-Built as part of a home automation setup. All IR protocol work was done from scratch — no existing library had complete support for this specific AC model line.
-
-If you need custom IR protocol work (reverse-engineering, ESP32 firmware, Home Assistant integration), I'm available on Upwork.
-
----
-
-*Blog post coming soon: "Reverse-Engineering Mitsubishi AC IR Protocol on ESP32"*
+MIT - use it, fork it, build on it.
