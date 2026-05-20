@@ -26,7 +26,7 @@ const uint16_t WIFI_STATUS_LED = 2;
 // ===================== IR receive config =====================
 const uint16_t kCaptureBufferSize = 1024;
 const uint8_t kTimeout = 50;      // ms idle to consider signal complete
-const uint16_t kMinUnknownSize = 12;
+const uint16_t kMinUnknownSize = 50;  // suppress short spurious bursts; full AC frame is >130 transitions
 
 // ===================== AC state =====================
 bool acPower = false;
@@ -71,7 +71,7 @@ void setLed(bool on) {
 //   B0=FF  B1=00  B2=fan  B3=fan_comp  B4=temp|mode  B5=0xFF-B4  B6=2A  B7=D5
 //
 // Fan B2/B3:   High=FF/00  Medium=BF/40  Low=9F/60
-// Mode B4 lo4: Cool=6  Dry=5  Fan=4  Heat=3  (power off OR'd with 0x8)
+// Mode B4 lo4: Auto=7  Cool=6  Dry=5  Fan=4  Heat=3  (power off OR'd with 0x8)
 // Temp B4 hi4: (32 - temp) & 0xF
 
 void sendMitsubishiCustom(bool power, uint8_t mode_code,
@@ -126,11 +126,12 @@ void sendACCommand(bool power, stdAc::opmode_t mode, uint8_t temp, stdAc::fanspe
 
   uint8_t mc;
   switch (mode) {
+    case stdAc::opmode_t::kAuto: mc = 0x7; break;
     case stdAc::opmode_t::kCool: mc = 0x6; break;
     case stdAc::opmode_t::kDry:  mc = 0x5; break;
     case stdAc::opmode_t::kFan:  mc = 0x4; break;
     case stdAc::opmode_t::kHeat: mc = 0x3; break;
-    default:                     mc = 0x6; break;  // Auto falls back to Cool
+    default:                     mc = 0x6; break;  // unknown -> Cool
   }
 
   uint8_t fb2, fb3;
@@ -577,7 +578,10 @@ void setupOTA() {
     irrecv.disableIRIn();
   });
   ArduinoOTA.onEnd([]() { Serial.println("\n[OTA] Update complete"); });
-  ArduinoOTA.onError([](ota_error_t e) { Serial.printf("[OTA] Error[%u]\n", e); });
+  ArduinoOTA.onError([](ota_error_t e) {
+    Serial.printf("[OTA] Error[%u]\n", e);
+    irrecv.enableIRIn();  // re-enable IR capture so a failed upload does not silently disable receive
+  });
   ArduinoOTA.begin();
   Serial.println("[OTA] Service started");
 }
