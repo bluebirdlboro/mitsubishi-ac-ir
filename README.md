@@ -56,6 +56,10 @@ An IR receiver (e.g. VS1838B) on GPIO14 is optional and used only for decoding t
 
 ## Protocol
 
+`IRremoteESP8266` already ships decoders for the documented Mitsubishi Heavy variants (`MITSUBISHI_HEAVY_152` and `MITSUBISHI_HEAVY_88`). The SRK unit this controller targets, however, emits an 8-byte frame that matches neither — the library reports it as `UNKNOWN`. The format below was derived from scratch by recording raw mark/space pairs straight off `IRrecv` and inferring the field layout (mode / temperature / fan / checksum / fixed trailer) by varying one knob at a time on the original remote.
+
+The library's stock decoders are kept active alongside the custom one, so the same firmware also handles related Mitsubishi Heavy installations that the library already understands.
+
 The captured frame is **8 bytes**, sent three times back-to-back with a 50 ms gap.
 
 | Byte | Meaning |
@@ -64,7 +68,7 @@ The captured frame is **8 bytes**, sent three times back-to-back with a 50 ms ga
 | B1 | `0x00` header |
 | B2 | Fan speed primary (`0xFF` high, `0xBF` medium, `0x9F` low) |
 | B3 | Fan speed complement (`0x00` / `0x40` / `0x60`) |
-| B4 | High nibble: `(32 - temp) & 0xF`; low nibble: mode (`6` cool, `5` dry, `4` fan, `3` heat). Bit 3 of the low nibble set = power off. |
+| B4 | High nibble: `(32 - temp) & 0xF`; low nibble: mode (`7` auto, `6` cool, `5` dry, `4` fan, `3` heat). Bit 3 of the low nibble set = power off. |
 | B5 | `0xFF - B4` checksum |
 | B6 | `0x2A` trailer |
 | B7 | `0xD5` trailer |
