@@ -13,9 +13,10 @@
 // ===================== User configuration =====================
 #include "secrets.h"
 
-const char* DEVICE_ID = "esp32_ir_light_01";
-const char* DEVICE_NAME = "ESP32 IR Light";
-const char* OTA_HOSTNAME = "esp32-ir-light";
+const char* DEVICE_ID     = "mitsubishi_ac_01";
+const char* DEVICE_NAME   = "Mitsubishi AC IR";
+const char* OTA_HOSTNAME  = "mitsubishi-ac-ir";
+const char* TOPIC_PREFIX  = "mitsubishi_ac";  // base prefix for command/state topics
 
 const uint16_t IR_LED_PIN = 4;
 // Adjust to match your board: the GPIO labelled IR RX (commonly 14 or 15).
@@ -221,7 +222,9 @@ void publishDiscovery() {
   doc["mode_state_template"] = "{{ value_json.mode }}";
   doc["temperature_state_topic"] = topicACState;
   doc["temperature_state_template"] = "{{ value_json.temperature }}";
-  doc["current_temperature_topic"] = "camping_ir/sensor/room/temperature";
+  // If you have a separate room temperature sensor publishing over MQTT,
+  // set its topic here to display a "current" temperature in HA.
+  // doc["current_temperature_topic"] = "your_sensor/temperature";
 
   doc["fan_mode_command_topic"] = topicACCommand + "/fan";
   doc["fan_mode_state_topic"] = topicACState;
@@ -267,10 +270,8 @@ void publishDiscovery() {
   if (len >= sizeof(payload) - 1) {
     Serial.println("[MQTT] WARNING: payload may be truncated");
   }
-  bool ok = mqttClient.publish(
-    "homeassistant/climate/camping_ir/mitsubishi_ac/config",
-    payload, true
-  );
+  String discoveryTopic = String("homeassistant/climate/") + DEVICE_ID + "/config";
+  bool ok = mqttClient.publish(discoveryTopic.c_str(), payload, true);
   Serial.printf("[MQTT] Climate discovery publish: %s\n", ok ? "OK" : "FAILED");
 }
 
@@ -634,12 +635,13 @@ void setup() {
   Serial.println(" ESP32 IR AC Controller v2.0       ");
   Serial.println("====================================");
 
+  String prefix = String(TOPIC_PREFIX);
   topicAvailability = "home/" + String(DEVICE_ID) + "/availability";
-  topicIRReceived = "camping_ir/ir_received";
-  topicACCommand  = "camping_ir/cmd/ac_climate";
-  topicACState    = "camping_ir/state/ac_climate";
-  topicScene      = "camping_ir/cmd/scene";
-  topicSceneState = "camping_ir/state/scene";
+  topicIRReceived   = prefix + "/ir_received";
+  topicACCommand    = prefix + "/cmd/ac_climate";
+  topicACState      = prefix + "/state/ac_climate";
+  topicScene        = prefix + "/cmd/scene";
+  topicSceneState   = prefix + "/state/scene";
 
   irsend.begin();
   Serial.printf("[IR Send] init, pin=%u\n", IR_LED_PIN);

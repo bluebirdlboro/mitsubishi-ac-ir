@@ -78,7 +78,7 @@ Timing (microseconds):
 | Bit 0 | 508 | 1496 |
 | Trailer | 508 | 7422 |
 
-Bits are emitted LSB-first within each byte. Captured with a logic analyser on the original remote's IR LED line and replayed via `IRremoteESP8266`'s `sendRaw`.
+Bits are emitted LSB-first within each byte. The frame was captured by pointing the original remote at the ESP32's own IR receiver (`IRrecv`), dumping the raw mark/space buffer over serial, and hand-analysing the timings to extract the 8-byte payload. The reconstructed frame is replayed via `IRremoteESP8266`'s `sendRaw`.
 
 ---
 
@@ -86,14 +86,14 @@ Bits are emitted LSB-first within each byte. Captured with a logic analyser on t
 
 | Topic | Direction | Description |
 |---|---|---|
-| `camping_ir/cmd/ac_climate/mode` | -> device | `off`, `cool`, `heat`, `dry`, `fan_only`, `auto` |
-| `camping_ir/cmd/ac_climate/temp` | -> device | Integer 16-30 |
-| `camping_ir/cmd/ac_climate/fan` | -> device | `low`, `medium`, `high` |
-| `camping_ir/cmd/ac_climate/preset` | -> device | `Power Cool`, `Comfort`, `Quiet Sleep`, `Away/Off` |
-| `camping_ir/cmd/ac_climate/set_all` | -> device | JSON `{mode, temperature, fan_speed}` for one-shot setting |
-| `camping_ir/state/ac_climate` | <- device | JSON `{mode, temperature, fan_mode, preset_mode}` (retained) |
-| `camping_ir/state/scene` | <- device | Current scene name (retained) |
-| `camping_ir/ir_received` | <- device | Decoded frame when the original remote is used |
+| `mitsubishi_ac/cmd/ac_climate/mode` | -> device | `off`, `cool`, `heat`, `dry`, `fan_only`, `auto` |
+| `mitsubishi_ac/cmd/ac_climate/temp` | -> device | Integer 16-30 |
+| `mitsubishi_ac/cmd/ac_climate/fan` | -> device | `low`, `medium`, `high` |
+| `mitsubishi_ac/cmd/ac_climate/preset` | -> device | `Power Cool`, `Comfort`, `Quiet Sleep`, `Away/Off` |
+| `mitsubishi_ac/cmd/ac_climate/set_all` | -> device | JSON `{mode, temperature, fan_speed}` for one-shot setting |
+| `mitsubishi_ac/state/ac_climate` | <- device | JSON `{mode, temperature, fan_mode, preset_mode}` (retained) |
+| `mitsubishi_ac/state/scene` | <- device | Current scene name (retained) |
+| `mitsubishi_ac/ir_received` | <- device | Decoded frame when the original remote is used |
 | `home/<device_id>/availability` | <- device | `online` / `offline` (LWT) |
 
 ---
