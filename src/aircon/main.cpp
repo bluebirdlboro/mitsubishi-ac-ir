@@ -204,13 +204,13 @@ void publishSceneState() {
 }
 
 void publishDiscovery() {
-  static bool sent = false;
-  if (sent) return;
-  sent = true;
+  // Republish on every MQTT (re)connect. Discovery is retained on the broker,
+  // so this is idempotent for HA, but it survives a broker losing retained state.
 
   JsonDocument doc;
+  String uniqueId = String(DEVICE_ID) + "_climate";
   doc["name"] = "Mitsubishi AC";
-  doc["unique_id"] = "mitsubishi_ac_climate";
+  doc["unique_id"] = uniqueId;
   doc["availability_topic"]    = topicAvailability;
   doc["payload_available"]     = "online";
   doc["payload_not_available"] = "offline";
