@@ -22,6 +22,17 @@ Reverse-engineered infrared protocol for Mitsubishi Heavy Industries SRK-series 
 
 ---
 
+## At a glance
+
+- **1** previously undocumented 8-byte IR frame fully decoded (header, fan primary + complement, temperature, mode, checksum, trailer)
+- **5 modes × 3 fan speeds × 15 temperatures = 225 unique on-frame combinations** + 4 preset scenes, all controllable from a single Home Assistant climate entity
+- **Bidirectional**: ESP32 also decodes the original physical remote's bursts and republishes parsed state, so HA stays in sync regardless of which side issued the command
+- **10 MQTT topics** (6 command + 3 state + 1 LWT availability), auto-registered via HA MQTT Discovery
+- **0** cloud dependencies, **0** vendor SDKs — runs entirely on local Mosquitto
+- Running 24/7 against a real SRK-series unit since the first flash
+
+---
+
 ## Hardware
 
 ```
@@ -95,6 +106,7 @@ Bits are emitted LSB-first within each byte. The frame was captured by pointing 
 | `mitsubishi_ac/cmd/ac_climate/fan` | -> device | `low`, `medium`, `high` |
 | `mitsubishi_ac/cmd/ac_climate/preset` | -> device | `Power Cool`, `Comfort`, `Quiet Sleep`, `Away/Off` |
 | `mitsubishi_ac/cmd/ac_climate/set_all` | -> device | JSON `{mode, temperature, fan_speed}` for one-shot setting |
+| `mitsubishi_ac/cmd/scene/set` | -> device | Scene name (alias entry point for the preset list) |
 | `mitsubishi_ac/state/ac_climate` | <- device | JSON `{mode, temperature, fan_mode, preset_mode}` (retained) |
 | `mitsubishi_ac/state/scene` | <- device | Current scene name (retained) |
 | `mitsubishi_ac/ir_received` | <- device | Decoded frame when the original remote is used |
