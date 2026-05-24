@@ -73,6 +73,8 @@ The library's stock decoders are kept active alongside the custom one, so the sa
 
 The captured frame is **8 bytes**, sent three times back-to-back with a 50 ms gap.
 
+![8-byte frame layout](docs/ir_protocol_table.svg)
+
 | Byte | Meaning |
 |---|---|
 | B0 | `0xFF` header |
@@ -85,6 +87,8 @@ The captured frame is **8 bytes**, sent three times back-to-back with a 50 ms ga
 | B7 | `0xD5` trailer |
 
 Timing (microseconds):
+
+![IR signal timing waveform](docs/ir_signal_timing.svg)
 
 | Symbol | Mark | Space |
 |---|---|---|

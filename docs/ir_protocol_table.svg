@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" width="800" height="320">
+  <rect width="800" height="320" fill="#1a1a2e"/>
+  <text x="400" y="30" text-anchor="middle" fill="#e94560" font-size="16" font-weight="bold" font-family="monospace">Mitsubishi Heavy AC IR Protocol — 8-Byte Frame Layout</text>
+
+  <!-- Table header -->
+  <rect x="20" y="45" width="70" height="30" fill="#16213e" stroke="#0f3460"/>
+  <text x="55" y="65" text-anchor="middle" fill="#fff" font-size="13" font-family="monospace">Byte</text>
+  <rect x="90" y="45" width="120" height="30" fill="#16213e" stroke="#0f3460"/>
+  <text x="150" y="65" text-anchor="middle" fill="#fff" font-size="13" font-family="monospace">Value Decoded</text>
+  <rect x="210" y="45" width="550" height="30" fill="#16213e" stroke="#0f3460"/>
+  <text x="485" y="65" text-anchor="middle" fill="#fff" font-size="13" font-family="monospace">Meaning</text>
+
+  <!-- Rows -->
+  <rect x="20" y="75" width="70" height="28" fill="#0f3460" stroke="#0f3460"/>
+  <text x="55" y="94" text-anchor="middle" fill="#e94560" font-size="13" font-family="monospace" font-weight="bold">B0</text>
+  <rect x="90" y="75" width="120" height="28" fill="#16213e" stroke="#0f3460"/>
+  <text x="150" y="94" text-anchor="middle" fill="#4ecca3" font-size="12" font-family="monospace">0xFF</text>
+  <rect x="210" y="75" width="550" height="28" fill="#16213e" stroke="#0f3460"/>
+  <text x="225" y="94" fill="#ccc" font-size="12" font-family="monospace">Frame header (fixed)</text>
+
+  <rect x="20" y="103" width="70" height="28" fill="#0f3460" stroke="#0f3460"/>
+  <text x="55" y="122" text-anchor="middle" fill="#e94560" font-size="13" font-family="monospace" font-weight="bold">B1</text>
+  <rect x="90" y="103" width="120" height="28" fill="#16213e" stroke="#0f3460"/>
+  <text x="150" y="122" text-anchor="middle" fill="#4ecca3" font-size="12" font-family="monospace">0x00</text>
+  <rect x="210" y="103" width="550" height="28" fill="#16213e" stroke="#0f3460"/>
+  <text x="225" y="122" fill="#ccc" font-size="12" font-family="monospace">Frame header (fixed)</text>
+
+  <rect x="20" y="131" width="70" height="28" fill="#0f3460" stroke="#0f3460"/>
+  <text x="55" y="150" text-anchor="middle" fill="#e94560" font-size="13" font-family="monospace" font-weight="bold">B2</text>
+  <rect x="90" y="131" width="120" height="28" fill="#16213e" stroke="#0f3460"/>
+  <text x="150" y="150" text-anchor="middle" fill="#4ecca3" font-size="12" font-family="monospace">0xFF / BF / 9F</text>
+  <rect x="210" y="131" width="550" height="28" fill="#16213e" stroke="#0f3460"/>
+  <text x="225" y="150" fill="#ccc" font-size="12" font-family="monospace">Fan speed primary (FF=High, BF=Medium, 9F=Low)</text>
+
+  <rect x="20" y="159" width="70" height="28" fill="#0f3460" stroke="#0f3460"/>
+  <text x="55" y="178" text-anchor="middle" fill="#e94560" font-size="13" font-family="monospace" font-weight="bold">B3</text>
+  <rect x="90" y="159" width="120" height="28" fill="#16213e" stroke="#0f3460"/>
+  <text x="150" y="178" text-anchor="middle" fill="#4ecca3" font-size="12" font-family="monospace">complement of B2</text>
+  <rect x="210" y="159" width="550" height="28" fill="#16213e" stroke="#0f3460"/>
+  <text x="225" y="178" fill="#ccc" font-size="12" font-family="monospace">Fan XOR pair: B2⊕B3 = 0xFF. Error detection on noisy IR channel</text>
+
+  <rect x="20" y="187" width="70" height="28" fill="#0f3460" stroke="#0f3460"/>
+  <text x="55" y="206" text-anchor="middle" fill="#e94560" font-size="13" font-family="monospace" font-weight="bold">B4</text>
+  <rect x="90" y="187" width="120" height="28" fill="#16213e" stroke="#0f3460"/>
+  <text x="150" y="206" text-anchor="middle" fill="#4ecca3" font-size="12" font-family="monospace">temp | mode</text>
+  <rect x="210" y="187" width="550" height="28" fill="#16213e" stroke="#0f3460"/>
+  <text x="225" y="206" fill="#ccc" font-size="12" font-family="monospace">High nibble = (32 - temp), Low nibble = mode (6=Cool,5=Dry,4=Fan,3=Heat). OR 0x08 = OFF</text>
+
+  <rect x="20" y="215" width="70" height="28" fill="#0f3460" stroke="#0f3460"/>
+  <text x="55" y="234" text-anchor="middle" fill="#e94560" font-size="13" font-family="monospace" font-weight="bold">B5</text>
+  <rect x="90" y="215" width="120" height="28" fill="#16213e" stroke="#0f3460"/>
+  <text x="150" y="234" text-anchor="middle" fill="#4ecca3" font-size="12" font-family="monospace">0xFF - B4</text>
+  <rect x="210" y="215" width="550" height="28" fill="#16213e" stroke="#0f3460"/>
+  <text x="225" y="234" fill="#ccc" font-size="12" font-family="monospace">Checksum: one's complement of B4. Frame rejected if mismatch</text>
+
+  <rect x="20" y="243" width="70" height="28" fill="#0f3460" stroke="#0f3460"/>
+  <text x="55" y="262" text-anchor="middle" fill="#e94560" font-size="13" font-family="monospace" font-weight="bold">B6</text>
+  <rect x="90" y="243" width="120" height="28" fill="#16213e" stroke="#0f3460"/>
+  <text x="150" y="262" text-anchor="middle" fill="#4ecca3" font-size="12" font-family="monospace">0x2A</text>
+  <rect x="210" y="243" width="550" height="28" fill="#16213e" stroke="#0f3460"/>
+  <text x="225" y="262" fill="#ccc" font-size="12" font-family="monospace">Trailer (fixed). LSB-first: bit pattern ...0101010 → marks end of frame</text>
+
+  <rect x="20" y="271" width="70" height="28" fill="#0f3460" stroke="#0f3460"/>
+  <text x="55" y="290" text-anchor="middle" fill="#e94560" font-size="13" font-family="monospace" font-weight="bold">B7</text>
+  <rect x="90" y="271" width="120" height="28" fill="#16213e" stroke="#0f3460"/>
+  <text x="150" y="290" text-anchor="middle" fill="#4ecca3" font-size="12" font-family="monospace">0xD5</text>
+  <rect x="210" y="271" width="550" height="28" fill="#16213e" stroke="#0f3460"/>
+  <text x="225" y="290" fill="#ccc" font-size="12" font-family="monospace">Trailer (fixed). Paired with B6 as end-of-frame markers</text>
+</svg>
