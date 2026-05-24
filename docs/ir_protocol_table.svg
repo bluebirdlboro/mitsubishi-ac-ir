@@ -44,7 +44,7 @@
   <rect x="90" y="187" width="120" height="28" fill="#16213e" stroke="#0f3460"/>
   <text x="150" y="206" text-anchor="middle" fill="#4ecca3" font-size="12" font-family="monospace">temp | mode</text>
   <rect x="210" y="187" width="550" height="28" fill="#16213e" stroke="#0f3460"/>
-  <text x="225" y="206" fill="#ccc" font-size="12" font-family="monospace">High nibble = (32 - temp), Low nibble = mode (6=Cool,5=Dry,4=Fan,3=Heat). OR 0x08 = OFF</text>
+  <text x="225" y="206" fill="#ccc" font-size="12" font-family="monospace">(32-temp) &lt;&lt; 4 | mode (6/5/4/3 = Cool/Dry/Fan/Heat) | 0x08 if OFF</text>
 
   <rect x="20" y="215" width="70" height="28" fill="#0f3460" stroke="#0f3460"/>
   <text x="55" y="234" text-anchor="middle" fill="#e94560" font-size="13" font-family="monospace" font-weight="bold">B5</text>

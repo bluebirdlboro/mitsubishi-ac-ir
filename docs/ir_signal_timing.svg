@@ -1,10 +1,65 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3488.0600000000004 140" width="3488.0600000000004" height="140">
-  <rect width="3488.0600000000004" height="140" fill="#1a1a2e"/>
-  <text x="1744.0300000000002" y="15" text-anchor="middle" fill="#e94560" font-size="13" font-weight="bold" font-family="monospace">IR Signal Timing — Mitsubishi Heavy AC (38 kHz Carrier, NEC-like encoding)</text>
-  <text x="30" y="20" fill="#e94560" font-size="11" font-family="monospace">Header</text><rect x="30.0" y="20.0" width="357.0" height="60.0" fill="#e94560" opacity="0.9"/><line x1="30.0" y1="20" x2="30.0" y2="90" stroke="#333" stroke-width="0.5"/><rect x="387.0" y="80.0" width="448.5" height="10.0" fill="#4ecca3" opacity="0.9"/><text x="30" y="115" fill="#888" font-size="9" font-family="monospace">5950μs</text><text x="387.0" y="115" fill="#888" font-size="9" font-family="monospace">7475μs</text><line x1="850.5" y1="15" x2="850.5" y2="90" stroke="#555" stroke-width="1" stroke-dasharray="3,3"/><text x="855.5" y="20" fill="#e94560" font-size="11" font-family="monospace">B0 = 0xFF (all 1s)</text><rect x="855.5" y="20.0" width="30.5" height="60.0" fill="#e94560" opacity="0.9"/><line x1="855.5" y1="20" x2="855.5" y2="90" stroke="#333" stroke-width="0.5"/><rect x="886.0" y="80.0" width="207.2" height="10.0" fill="#4ecca3" opacity="0.9"/><rect x="1093.2" y="20.0" width="30.5" height="60.0" fill="#e94560" opacity="0.9"/><line x1="1093.2" y1="20" x2="1093.2" y2="90" stroke="#333" stroke-width="0.5"/><rect x="1123.7" y="80.0" width="207.2" height="10.0" fill="#4ecca3" opacity="0.9"/><rect x="1330.9" y="20.0" width="30.5" height="60.0" fill="#e94560" opacity="0.9"/><line x1="1330.9" y1="20" x2="1330.9" y2="90" stroke="#333" stroke-width="0.5"/><rect x="1361.4" y="80.0" width="207.2" height="10.0" fill="#4ecca3" opacity="0.9"/><rect x="1568.7" y="20.0" width="30.5" height="60.0" fill="#e94560" opacity="0.9"/><line x1="1568.7" y1="20" x2="1568.7" y2="90" stroke="#333" stroke-width="0.5"/><rect x="1599.1" y="80.0" width="207.2" height="10.0" fill="#4ecca3" opacity="0.9"/><rect x="1806.4" y="20.0" width="30.5" height="60.0" fill="#e94560" opacity="0.9"/><line x1="1806.4" y1="20" x2="1806.4" y2="90" stroke="#333" stroke-width="0.5"/><rect x="1836.9" y="80.0" width="207.2" height="10.0" fill="#4ecca3" opacity="0.9"/><rect x="2044.1" y="20.0" width="30.5" height="60.0" fill="#e94560" opacity="0.9"/><line x1="2044.1" y1="20" x2="2044.1" y2="90" stroke="#333" stroke-width="0.5"/><rect x="2074.6" y="80.0" width="207.2" height="10.0" fill="#4ecca3" opacity="0.9"/><rect x="2281.8" y="20.0" width="30.5" height="60.0" fill="#e94560" opacity="0.9"/><line x1="2281.8" y1="20" x2="2281.8" y2="90" stroke="#333" stroke-width="0.5"/><rect x="2312.3" y="80.0" width="207.2" height="10.0" fill="#4ecca3" opacity="0.9"/><rect x="2519.5" y="20.0" width="30.5" height="60.0" fill="#e94560" opacity="0.9"/><line x1="2519.5" y1="20" x2="2519.5" y2="90" stroke="#333" stroke-width="0.5"/><rect x="2550.0" y="80.0" width="207.2" height="10.0" fill="#4ecca3" opacity="0.9"/><text x="855.5" y="115" fill="#888" font-size="9" font-family="monospace">508μs</text><text x="885.98" y="115" fill="#888" font-size="8" font-family="monospace">3454μs(Bit1)</text><text x="2787.26" y="35" fill="#888" font-size="9" font-family="monospace">... B1 0x00 (all 0s, 1496μs spaces) +</text><text x="2787.26" y="48" fill="#888" font-size="9" font-family="monospace">... B2-B7 (64 bits total, LSB-first) ...</text><text x="2982.26" y="20" fill="#e94560" font-size="11" font-family="monospace">Trailer</text><rect x="2982.3" y="20.0" width="30.5" height="60.0" fill="#e94560" opacity="0.9"/><line x1="2982.3" y1="20" x2="2982.3" y2="90" stroke="#333" stroke-width="0.5"/><rect x="3012.7" y="80.0" width="445.3" height="10.0" fill="#4ecca3" opacity="0.9"/><text x="2982.26" y="115" fill="#888" font-size="9" font-family="monospace">508μs</text><text x="3012.7400000000002" y="115" fill="#888" font-size="9" font-family="monospace">7422μs</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 280" width="1100" height="280">
+  <rect width="1100" height="280" fill="#1a1a2e"/>
+
+  <text x="550" y="25" text-anchor="middle" fill="#e94560" font-size="16" font-weight="bold" font-family="monospace">IR Signal Timing — Mitsubishi Heavy AC (38 kHz Carrier)</text>
+  <text x="550" y="45" text-anchor="middle" fill="#888" font-size="11" font-family="monospace">representative symbols, not drawn fully to scale</text>
+
+  <!-- Header symbol -->
+  <text x="80" y="80" text-anchor="middle" fill="#e94560" font-size="14" font-weight="bold" font-family="monospace">HEADER</text>
+  <rect x="20" y="95" width="60" height="50" fill="#e94560" opacity="0.9"/>
+  <rect x="80" y="135" width="80" height="10" fill="#4ecca3" opacity="0.9"/>
+  <text x="50" y="170" text-anchor="middle" fill="#ccc" font-size="13" font-family="monospace">mark</text>
+  <text x="50" y="188" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold" font-family="monospace">5950μs</text>
+  <text x="120" y="170" text-anchor="middle" fill="#ccc" font-size="13" font-family="monospace">space</text>
+  <text x="120" y="188" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold" font-family="monospace">7475μs</text>
+
+  <line x1="200" y1="60" x2="200" y2="200" stroke="#444" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Bit 1 symbol -->
+  <text x="290" y="80" text-anchor="middle" fill="#e94560" font-size="14" font-weight="bold" font-family="monospace">BIT 1</text>
+  <rect x="220" y="95" width="20" height="50" fill="#e94560" opacity="0.9"/>
+  <rect x="240" y="135" width="120" height="10" fill="#4ecca3" opacity="0.9"/>
+  <text x="230" y="170" text-anchor="middle" fill="#ccc" font-size="13" font-family="monospace">mark</text>
+  <text x="230" y="188" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold" font-family="monospace">508μs</text>
+  <text x="300" y="170" text-anchor="middle" fill="#ccc" font-size="13" font-family="monospace">space</text>
+  <text x="300" y="188" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold" font-family="monospace">3454μs</text>
+
+  <line x1="390" y1="60" x2="390" y2="200" stroke="#444" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Bit 0 symbol -->
+  <text x="470" y="80" text-anchor="middle" fill="#e94560" font-size="14" font-weight="bold" font-family="monospace">BIT 0</text>
+  <rect x="410" y="95" width="20" height="50" fill="#e94560" opacity="0.9"/>
+  <rect x="430" y="135" width="70" height="10" fill="#4ecca3" opacity="0.9"/>
+  <text x="420" y="170" text-anchor="middle" fill="#ccc" font-size="13" font-family="monospace">mark</text>
+  <text x="420" y="188" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold" font-family="monospace">508μs</text>
+  <text x="475" y="170" text-anchor="middle" fill="#ccc" font-size="13" font-family="monospace">space</text>
+  <text x="475" y="188" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold" font-family="monospace">1496μs</text>
+
+  <line x1="520" y1="60" x2="520" y2="200" stroke="#444" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Payload abbreviation -->
+  <text x="690" y="100" text-anchor="middle" fill="#888" font-size="13" font-family="monospace">… × 64 bits (8 bytes, LSB-first) …</text>
+  <text x="690" y="125" text-anchor="middle" fill="#888" font-size="12" font-family="monospace">each bit = mark + (long space = 1, short space = 0)</text>
+  <line x1="560" y1="140" x2="820" y2="140" stroke="#888" stroke-width="1" stroke-dasharray="2,2"/>
+  <text x="690" y="170" text-anchor="middle" fill="#ccc" font-size="12" font-family="monospace">payload</text>
+
+  <line x1="860" y1="60" x2="860" y2="200" stroke="#444" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Trailer symbol -->
+  <text x="980" y="80" text-anchor="middle" fill="#e94560" font-size="14" font-weight="bold" font-family="monospace">TRAILER</text>
+  <rect x="880" y="95" width="20" height="50" fill="#e94560" opacity="0.9"/>
+  <rect x="900" y="135" width="180" height="10" fill="#4ecca3" opacity="0.9"/>
+  <text x="890" y="170" text-anchor="middle" fill="#ccc" font-size="13" font-family="monospace">mark</text>
+  <text x="890" y="188" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold" font-family="monospace">508μs</text>
+  <text x="990" y="170" text-anchor="middle" fill="#ccc" font-size="13" font-family="monospace">space</text>
+  <text x="990" y="188" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold" font-family="monospace">7422μs</text>
+
+  <!-- Frame note -->
+  <text x="550" y="230" text-anchor="middle" fill="#aaa" font-size="13" font-family="monospace">Full frame = HEADER + 8 bytes × 8 bits + TRAILER, sent 3× back-to-back with 50 ms gap</text>
+
   <!-- Legend -->
-  <rect x="3258.0600000000004" y="115" width="18" height="10" fill="#e94560" opacity="0.9"/>
-  <text x="3280.0600000000004" y="124" fill="#ccc" font-size="9" font-family="monospace">Mark (IR LED ON, 38 kHz)</text>
-  <rect x="3258.0600000000004" y="130" width="18" height="10" fill="#4ecca3" opacity="0.9"/>
-  <text x="3280.0600000000004" y="139" fill="#ccc" font-size="9" font-family="monospace">Space (IR LED OFF)</text>
+  <rect x="320" y="245" width="20" height="14" fill="#e94560" opacity="0.9"/>
+  <text x="350" y="257" fill="#ccc" font-size="13" font-family="monospace">Mark (IR LED ON, 38 kHz carrier)</text>
+  <rect x="660" y="245" width="20" height="14" fill="#4ecca3" opacity="0.9"/>
+  <text x="690" y="257" fill="#ccc" font-size="13" font-family="monospace">Space (IR LED OFF)</text>
 </svg>
